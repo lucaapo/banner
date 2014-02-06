@@ -19,14 +19,14 @@ class banner extends CI_Controller {
     }
 
     function form_upload() {
-        
-        $typo=$this->fellSelectTypology();
 
-        $typo['error']="";
+        $typo = $this->fellSelectTypology();
+
+        $typo['error'] = "";
 
         $this->load->view('templates/header');
         $this->load->view('banner/form_upload', $typo);
-//      $this->load->view('templates/footer');
+        $this->load->view('templates/footer');
     }
 
     function uploaded() {
@@ -43,13 +43,17 @@ class banner extends CI_Controller {
             $error = array('error' => $this->upload->display_errors());
 //                print_r($this->upload->data());
 //                print_r($error);die();
-            $typo=$this->fellSelectTypology();
-            $error['typologies']=$typo['typologies'];
+            $typo = $this->fellSelectTypology();
+            $error['typologies'] = $typo['typologies'];
+            $this->load->view('templates/header');
             $this->load->view('banner/form_upload', $error);
+            $this->load->view('templates/footer');
         } else {
             $data = array('upload_data' => $this->upload->data());
-
+            $this->load->view('templates/header');
             $this->load->view('banner/uploaded', $data);
+            $this->load->view('templates/footer');
+            
         }
     }
 

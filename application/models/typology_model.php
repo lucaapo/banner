@@ -63,4 +63,9 @@ class Typology_model extends CI_Model {
         return $results;
     }
 
+    public function getDimensions($id){
+        $query = $this->db->get_where('banner_typology',array('banner_typology_id'=>$id));
+        return $query->result();
+    }
+    
 }

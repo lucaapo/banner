@@ -14,7 +14,10 @@ require APPPATH.'/libraries/REST_Controller.php';
 class Banner_rest extends REST_Controller {
 
     public function index_get() {
-
+//        if(isset($_REQUEST['op']) && $_REQUEST['op']=='typology'){
+//            $this->typology();
+//            return;
+//        }
         $this->load->model('Banner_model');
         $id= $this->get('id');
         $user_id = $this->get('user_id');
@@ -38,5 +41,7 @@ class Banner_rest extends REST_Controller {
         $this->response($content, 200);
         return;
     }
+    
+  
 
 }

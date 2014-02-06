@@ -22,7 +22,7 @@ class User extends CI_Controller {
         $data['user'] = $this->User_model->get_user(1);
         $this->load->view('templates/header', $data);
         $this->load->view('user/index', $data);
-//        $this->load->view('templates/footer');
+        $this->load->view('templates/footer');
     }
 
     public function view($id) {
@@ -39,7 +39,7 @@ class User extends CI_Controller {
         if (!$this->input->post('submit')) {
             $this->load->view('templates/header');
             $this->load->view('login');
-//            $this->load->view('templates/footer');
+            $this->load->view('templates/footer');
         }
         $this->load->helper(array('form', 'url'));
 
@@ -48,16 +48,21 @@ class User extends CI_Controller {
         $this->form_validation->set_rules('password', 'Password', 'required');
 //        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
 //        $this->form_validation->set_rules('email', 'Email', 'required');
-        
-        
+
+
         $user = $this->input->post('username');
         $pass = $this->input->post('password');
-        
+
         if ($this->form_validation->run() == FALSE) {
+            $this->load->view('templates/header');
             $this->load->view('login');
+            $this->load->view('templates/footer');
         } else {
-            $data = array('user'=>$user,'pass'=>$pass);
-            $this->load->view('success',$data);
+            $data = array('user' => $user, 'pass' => $pass);
+
+            $this->load->view('templates/header');
+            $this->load->view('success', $data);
+            $this->load->view('templates/footer');
         }
     }
 

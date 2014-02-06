@@ -17,7 +17,7 @@ class Website_model extends CI_Model {
     var $user_id = "";
     var $root = "";
     var $active = "";
-    var $insert_date = "";
+    var $inserted_date = "";
 
     /**
      * costruttore override
@@ -99,11 +99,11 @@ class Website_model extends CI_Model {
      * Aggiunge un sito dall'input della form
      * @param type $name
      * @param type $root
-     * @param <User_model> $user
+     * @param <integer> $user_id
      */
-    public function addone($name,$root,$user){
+    public function addone($name,$root,$user_id){
         $this->name = $name;
-        $this->user_id = $user->user_id;
+        $this->user_id = $user_id;
         $this->root = $root;
         $this->active = 1;
         $this->inserted_date = date('Y-m-d H:i:s', time());
