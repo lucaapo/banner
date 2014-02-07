@@ -37,6 +37,7 @@
 | in the URL cannot be matched to a valid route.
 |
 */
+$route['page/check']='page/check';
 $route['bannertypology/typology']='bannertypology/typology';
 $route['website/addone']='website/addone';
 $route['banner/uploaded']='banner/uploaded';
