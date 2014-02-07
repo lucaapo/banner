@@ -72,6 +72,12 @@
                 }
         );
     }
+
+
+    $(function() {
+        $("#start_date").datepicker();
+    });
+
 </script>
 <?php $this->output->enable_profiler(TRUE); ?>
 <?php echo $error; ?>
@@ -102,6 +108,12 @@
 
     <input id="load" type="submit" name="override" value="Carica e sovrascrivi"/>
 
+</div>
+<div id="startdate">
+    <input id="start_date" name="start_date" value=""/>
+</div>
+<div id="enddate">
+    <input id="end_date" name="end_date" value=""/>
 </div>
 <div id="nopage">
     <input id='upload' type="submit" value="upload" name="submit"/>

@@ -20,7 +20,7 @@ class banner extends CI_Controller {
 
     function form_upload() {
 
-        $typo = $this->fellSelectTypology();
+        $typo = $this->fillSelectTypology();
 
         $typo['error'] = "";
 
@@ -43,7 +43,7 @@ class banner extends CI_Controller {
             $error = array('error' => $this->upload->display_errors());
 //                print_r($this->upload->data());
 //                print_r($error);die();
-            $typo = $this->fellSelectTypology();
+            $typo = $this->fillSelectTypology();
             $error['typologies'] = $typo['typologies'];
             $this->load->view('templates/header');
             $this->load->view('banner/form_upload', $error);
@@ -54,13 +54,15 @@ class banner extends CI_Controller {
             $x = $_POST['dimx'];
             $y = $_POST['dimy'];
             $typo = $_POST['typology'];
+            $startdate = $_POST['start_date'];
+            $enddate = $_POST['end_date'];
             $uplaod_data = $this->upload->data();
             //caso file caricato dimensione diversa di quella del banner
             if ($x != $uplaod_data['image_width'] || $y != $uplaod_data['image_height']) {
                 $error = array('error' => "il file caricato non corrisponde alle dimensioni del banner scelto!");
 //                print_r($this->upload->data());
 //                print_r($error);die();
-                $typo = $this->fellSelectTypology();
+                $typo = $this->fillSelectTypology();
                 $error['typologies'] = $typo['typologies'];
                 $this->load->view('templates/header');
                 $this->load->view('banner/form_upload', $error);
@@ -86,10 +88,17 @@ class banner extends CI_Controller {
             }
             //se la pagina non è ancora stata trovata la cerco o la inserisco
             if($page_id==0){
-                
+                $page_id = $this->Page_model->searchPage($page);
+                if($page_id==0||  is_null($page_id)){
+                    $page_id = $this->Page_model->insertPage($page);
+                }
             }
-
-
+            
+            //inserisce il banner
+            /**
+             * @TODO manca la data di start e di stop!!!
+             * 
+             */
             $data = array('upload_data' => $this->upload->data());
             $this->load->view('templates/header');
             $this->load->view('banner/uploaded', $data);
@@ -100,7 +109,7 @@ class banner extends CI_Controller {
     /**
      * riempie un array con i valori da passare a una select
      */
-    public function fellSelectTypology() {
+    public function fillSelectTypology() {
         $this->load->model('Typology_model');
         $typo = array();
 

@@ -113,13 +113,46 @@ class Page_model extends CI_Model {
         }
         return $dim;
     }
+
     /**
      * disattiva la pagina con l'id passato
      * @param type $page_id
      */
-    public function deactivate($page_id){
-        $this->active=0;
+    public function deactivate($page_id) {
+        $this->active = 0;
         $this->db->update('page', $this, array('page_id' => $page_id));
+    }
+
+    /**
+     * cerca la pagina con l'url passato e torna l'id
+     * @param type $url
+     * @return int
+     */
+    public function searchPage($url) {
+        $this->db->select('page_id');
+        $this->db->from('page');
+        $this->db->where('active=0 AND url=' . $url);
+        if ($this->db->count_all_results() < 1)
+            return 0;
+        $this->db->select('page_id');
+        $this->db->from('page');
+        $this->db->where('active=0 AND url=' . $url);
+        $res = $this->db->get();
+        return $res->result();
+    }
+    /**
+     * inserisce una pagina e torna l'id inserito
+     * @param type $url
+     * @return type
+     */
+    public function insertPage($url) {
+        $this->website_id = 1;
+
+        $this->active = 1;
+        $this->url = $url;
+
+        $this->db->insert('page', $this);
+        return $this->db->insert_id();
     }
 
 }

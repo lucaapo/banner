@@ -105,4 +105,24 @@ class Banner_model extends CI_Model {
         $this->db->update('banner', $this, array('banner_id' => $banner_id));
     }
     
+    /**
+     * inserisce un banner
+     * @param type $storage
+     * @param type $page_id
+     * @param type $banner_typology_id
+     * @param type $start_date
+     * @param type $end_date
+     * @return type
+     */
+    public function insertBanner($storage,$page_id,$banner_typology_id, $start_date, $end_date) {
+        $this->banner_typology_id = $banner_typology_id;
+        $this->page_id=$page_id;
+        $this->active = 1;
+        $this->storage = $storage;
+        $this->start_date=$start_date;
+        $this->end_date = $end_date;
+        $this->db->insert('banner', $this);
+        return $this->db->insert_id();
+    }
+    
 }
