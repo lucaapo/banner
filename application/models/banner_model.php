@@ -96,5 +96,13 @@ class Banner_model extends CI_Model {
         }
         
     }
+    /**
+     * disattiva il banner con l'id passato
+     * @param type $banner_id
+     */
+    public function deactivate($banner_id){
+        $this->active=0;
+        $this->db->update('banner', $this, array('banner_id' => $banner_id));
+    }
     
 }

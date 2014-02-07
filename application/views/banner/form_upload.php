@@ -21,6 +21,8 @@
 
                         $('#dimension_x').text(res.x);
                         $('#dimension_y').text(res.y);
+                        $('#dimx').val(res.x);
+                        $('#dimy').val(res.y);
                         $('#dimensions').show();
                         $('#pageselect').show();
                         return true;
@@ -81,9 +83,11 @@
     Larghezza:&nbsp;<span id='dimension_x'>
 
     </span>&nbsp; px
+    <input type="hidden" value="" name="dimx" id="dimx" /> 
     Altezza: <span id='dimension_y'>
 
     </span>&nbsp; px
+    <input type="hidden" value="" name="dimy" id="dimy"/>
 </div>
 <input type="file" name="userfile" />
 

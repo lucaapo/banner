@@ -21,28 +21,7 @@ class Page extends CI_Controller {
     public function check() {
         if (isset($_POST['root']) && isset($_POST['typo'])) {
             $root = $_POST['root'];
-            $numChars = preg_match_all("/\//", $root, $num);
-
-            if ($numChars <= 0) {
-                $root.="/";
-            }
-            $chunk = explode('/', $root);
-            $dim = array();
-            $base = $chunk[0];
-            for ($i = 0; $i < count($chunk); $i++) {
-                if($chunk[$i]=="")continue;
-                if ($i == 0) {
-                    $to_add = "";
-                } else {
-                    $to_add = "/" . $chunk[$i];
-                }
-                $base = $base . $to_add;
-                $appo = $this->Page_model->checkPage($base, $_POST['typo']);
-                if (!is_array($appo) || is_null($appo)) {
-                    continue;
-                }
-                $dim = array_merge($dim, $appo);
-            }
+            $dim = $this->Page_model->getSimilarPages($root,$_POST['typo']);
 //            $dim = $this->my_array_unique($dim);
             if ($dim != null) {
                 header('Content-Type: application/json');

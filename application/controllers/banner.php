@@ -49,11 +49,51 @@ class banner extends CI_Controller {
             $this->load->view('banner/form_upload', $error);
             $this->load->view('templates/footer');
         } else {
+            $page_id = 0;
+            $page = $_POST['page_name'];
+            $x = $_POST['dimx'];
+            $y = $_POST['dimy'];
+            $typo = $_POST['typology'];
+            $uplaod_data = $this->upload->data();
+            //caso file caricato dimensione diversa di quella del banner
+            if ($x != $uplaod_data['image_width'] || $y != $uplaod_data['image_height']) {
+                $error = array('error' => "il file caricato non corrisponde alle dimensioni del banner scelto!");
+//                print_r($this->upload->data());
+//                print_r($error);die();
+                $typo = $this->fellSelectTypology();
+                $error['typologies'] = $typo['typologies'];
+                $this->load->view('templates/header');
+                $this->load->view('banner/form_upload', $error);
+                $this->load->view('templates/footer');
+                return;
+            }
+            //caso ovverride: devo cancellare i banner sovrascritti
+            if (isset($_POST['ovverride']) && $_POST['ovverride'] != "") {
+                //carico le pagine simili
+                $this->load->model('Page_model');
+                $pages = $this->Page_model->getSimilarPages($page,$typo);
+                foreach ($pages as $pag){
+                    $this->Banner_model->deactivate($pag->banner_id);
+                    if($page == trim($pag->url)){
+                        $page_id = $pag->page_id;
+                        continue;
+                    }
+                    else{
+                        $this->Page_model->deactivate($pag->page_id);
+                        
+                    }
+                }
+            }
+            //se la pagina non è ancora stata trovata la cerco o la inserisco
+            if($page_id==0){
+                
+            }
+
+
             $data = array('upload_data' => $this->upload->data());
             $this->load->view('templates/header');
             $this->load->view('banner/uploaded', $data);
             $this->load->view('templates/footer');
-            
         }
     }
 
