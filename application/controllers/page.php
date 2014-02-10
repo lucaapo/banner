@@ -79,6 +79,7 @@ class Page extends CI_Controller {
                 $appo['active']=$key->active;
                 $appo['storage']=$this->Banner_model->cleanStorage($key->storage);
                 $appo['url']=$key->url;
+                $appo['banner_id']=$key->banner_id;
                 $pages[]=$appo;
             }
         }

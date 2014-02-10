@@ -51,7 +51,7 @@ class banner extends CI_Controller {
             $this->load->view('templates/footer');
         } else {
             $page_id = 0;
-            
+
             $page = $_POST['page_name'];
             $x = $_POST['dimx'];
             $y = $_POST['dimy'];
@@ -72,41 +72,39 @@ class banner extends CI_Controller {
                 return;
             }
             //caso ovverride: devo cancellare i banner sovrascritti
-            $pages = $this->Page_model->getSimilarPages($page,$typo);
+            $pages = $this->Page_model->getSimilarPages($page, $typo);
             if (is_array($pages) && !is_null($pages)) {
                 //carico le pagine simili
-                              
-                foreach ($pages as $pag){
-                    
+
+                foreach ($pages as $pag) {
+
                     $this->Banner_model->deactivate($pag->banner_id);
-                    if($page == trim($pag->url)){
+                    if ($page == trim($pag->url)) {
                         $page_id = $pag->page_id;
                         continue;
-                    }
-                    else{
+                    } else {
                         $this->Page_model->deactivate($pag->page_id);
-                        
                     }
                 }
             }
             //se la pagina non è ancora stata trovata la cerco o la inserisco
-            if($page_id==0){
+            if ($page_id == 0) {
                 $page_id = $this->Page_model->searchPage($page);
-                if($page_id==0||  is_null($page_id)){
+                if ($page_id == 0 || is_null($page_id)) {
                     $page_id = $this->Page_model->insertPage($page);
                 }
             }
-            
+
             //inserisce il banner
-            $data['page_id']=$page_id;
-            $data['start_date']=$startdate;
-            $data['end_date']=$enddate;
-            $data['banner_typology_id']=$typo;
-            $data['dimension_x']=$x;
-            $data['dimension_y']=$y;
-            $data['storage']=$uplaod_data['full_path'];
+            $data['page_id'] = $page_id;
+            $data['start_date'] = $startdate;
+            $data['end_date'] = $enddate;
+            $data['banner_typology_id'] = $typo;
+            $data['dimension_x'] = $x;
+            $data['dimension_y'] = $y;
+            $data['storage'] = $uplaod_data['full_path'];
             $this->Banner_model->save($data);
-            
+
             $data = array('upload_data' => $this->upload->data());
             $this->load->view('templates/header');
             $this->load->view('banner/uploaded', $data);
@@ -122,11 +120,33 @@ class banner extends CI_Controller {
         $typo = array();
 
         $typologies = $this->Typology_model->getAll();
-        $typo['typologies'][0]=" --- ";
+        $typo['typologies'][0] = " --- ";
         foreach ($typologies as $typ) {
             $typo['typologies'][$typ->banner_typology_id] = $typ->typology;
         }
         return $typo;
+    }
+
+    public function delete() {
+        if ($_POST['banner_id'] < 1 || $_POST['banner_id'] != "") {
+            $banner_id = $_POST['banner_id'];
+            $this->load->model('Banner_model');
+            $this->load->model('Page_model');
+            $ban = $this->Banner_model->get_where('banner', array('banner_id' => $banner_id));
+            $this->Banner_model->deactivate($banner_id);
+            $page = $this->Page_model->get_where('page', array('page_id' => $ban->page_id));
+            $allbanner = $this->Banner_model->get_where('banner', array('page_id' => $page->page_id));
+            if (count($allbanner) == 0 || is_null($allbanner)) {
+                $this->Page_model->deactivate($page->page_id);
+            }
+            header('Content-Type: application/json');
+            header("HTTP/1.1 200 OK");
+            echo json_encode("{'msg':'cancellato con successo'}");
+        } else {
+            header('Content-Type: application/xml');
+            header("HTTP/1.1 404");
+            echo xml_convert('<error>Impossibile eliminare il banner indicato</error>');
+        }
     }
 
 }
