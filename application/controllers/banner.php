@@ -122,7 +122,7 @@ class banner extends CI_Controller {
         $typo = array();
 
         $typologies = $this->Typology_model->getAll();
-
+        $typo['typologies'][0]=" --- ";
         foreach ($typologies as $typ) {
             $typo['typologies'][$typ->banner_typology_id] = $typ->typology;
         }

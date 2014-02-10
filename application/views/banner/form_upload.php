@@ -99,11 +99,11 @@
     });
 
 </script>
-<?php $this->output->enable_profiler(TRUE); ?>
+<?php // $this->output->enable_profiler(TRUE); ?>
 <?php echo $error; ?>
 
 <?php echo form_open_multipart('banner/uploaded'); ?>
-
+<?php echo $this->lang->line('select_typology_intro');?>
 <?php echo form_dropdown('typology', $typologies, 0, 'onChange="js:fillDimensions(this.value);" id="typology"'); ?>
 <div id='dimensions' style="width: 30%; padding: 5px;">
     Larghezza:&nbsp;<span id='dimension_x'>
