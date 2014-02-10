@@ -3,6 +3,9 @@
         $('#dimensions').hide();
         $('#pageselect').hide();
         $('#nopage').hide();
+        $('#startdate').hide();
+        $('#enddate').hide();
+        $('#prosegui').hide();
 
     });
     /**
@@ -56,9 +59,11 @@
                         $('#messages').text(res.message);
                         $('#pagetable').detach();
                         $('#old-page').append(res.table);
-                        $('#load').show();
-
-                        $('upload').hide();
+//                        $('#load').show();
+//                        $('#startdate').show();
+//                        $('#enddate').show();
+                        $('#prosegui').show();
+                        $('#upload').hide();
                         return true;
                     },
                     error: function(msg) {
@@ -66,7 +71,10 @@
                         $('#load').hide();
                         $('#old-page').detach();
                         $('#messages').detach();
-                        $('upload').show();
+                        $('#startdate').show();
+                        $('#enddate').show();
+
+                        $('#upload').show();
 
                     }
                 }
@@ -74,8 +82,20 @@
     }
 
 
-    $(function() {
+    function goany() {
+        $('#load').show();
+        $('#startdate').show();
+        $('#enddate').show();
+        $('#prosegui').hide();
+        $('#upload').hide();
+        $('#load').show();
+        $('#nopage').show();
+
+    }
+
+    $(document).ready(function() {
         $("#start_date").datepicker();
+        $("#end_date").datepicker();
     });
 
 </script>
@@ -104,9 +124,10 @@
     <?php echo form_button('Controlla', 'Controlla', 'onClick="js:checkPage();"'); ?>
 
     <span id="messages"></span>
+    <input type="button" id="prosegui" value="Prosegui lo stesso" name="goon" onclick="js:goany();"/>
     <span id="old-page"></span>
 
-    <input id="load" type="submit" name="override" value="Carica e sovrascrivi"/>
+
 
 </div>
 <div id="startdate">
@@ -116,6 +137,7 @@
     <input id="end_date" name="end_date" value=""/>
 </div>
 <div id="nopage">
+    <input id="load" type="submit" name="override" value="Carica e sovrascrivi"/>
     <input id='upload' type="submit" value="upload" name="submit"/>
 </div>
 <?php echo form_close(); ?>

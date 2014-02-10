@@ -42,7 +42,7 @@ class Banner_model extends CI_Model {
 
         $this->start_date = $_POST['start_date'];
         $this->insert_date = date('Y-m-d H:i:s', time());
-        $this->db->insert('banner_typology', $this);
+        $this->db->insert('banner', $this);
     }
 
     /**
@@ -76,35 +76,41 @@ class Banner_model extends CI_Model {
             return $results;
         }
     }
+
     /**
      * ritorna il percorso di un banner a partire da 
      * @param type $user_id
      * @param type $banner_id
      * @return type
      */
-    public function getBanner($user_id, $banner_id){
-        if($banner_id>0 && $user_id>0){
-            $this->db->join('page','page.page_id=banner.page_id');
-            $query = $this->db->get_where('banner',array('banner_id'=>$banner_id));
+    public function getBanner($user_id, $banner_id) {
+        if ($banner_id > 0 && $user_id > 0) {
+            $this->db->join('page', 'page.page_id=banner.page_id');
+            $query = $this->db->get_where('banner', array('banner_id' => $banner_id));
             $res = $query->result();
-            $res=$res[0];
-            if($res!=null && $res->page_id!=null &&$res->user_id==$user_id){
+            $res = $res[0];
+            if ($res != null && $res->page_id != null && $res->user_id == $user_id) {
 //                if(file_exists($res->storage)){
-                    return $res->storage;
+                return $res->storage;
 //                }
             }
         }
-        
     }
+
     /**
      * disattiva il banner con l'id passato
      * @param type $banner_id
      */
-    public function deactivate($banner_id){
-        $this->active=0;
+    public function deactivate($banner_id) {
+        $old = $this->db->get_where('banner',array('banner_id'=>$banner_id));
+        $this->active = 0;
+        $this->start_date = $old->start_date;
+        $this->end_date = $old->end_date;
+        $this->banner_typology_id = $old->banner_typology_id;
+        $this->storage = $old->storage;
         $this->db->update('banner', $this, array('banner_id' => $banner_id));
     }
-    
+
     /**
      * inserisce un banner
      * @param type $storage
@@ -114,15 +120,48 @@ class Banner_model extends CI_Model {
      * @param type $end_date
      * @return type
      */
-    public function insertBanner($storage,$page_id,$banner_typology_id, $start_date, $end_date) {
+    public function insertBanner($storage, $page_id, $banner_typology_id, $start_date, $end_date) {
         $this->banner_typology_id = $banner_typology_id;
-        $this->page_id=$page_id;
+        $this->page_id = $page_id;
         $this->active = 1;
         $this->storage = $storage;
-        $this->start_date=$start_date;
+        $this->start_date = $start_date;
         $this->end_date = $end_date;
         $this->db->insert('banner', $this);
         return $this->db->insert_id();
     }
-    
+
+    public function save($data) {
+        $this->banner_typology_id = $data['banner_typology_id'];
+        $this->page_id = $data['page_id'];
+        $this->end_date = $data['end_date'];
+        $this->active = 1;
+        $this->storage = $data['storage'];
+
+        $this->start_date = $data['start_date'];
+        $this->insert_date = date('Y-m-d H:i:s', time());
+        $this->db->insert('banner', $this);
+    }
+
+    /**
+     * pulisce la stringa e torna il percorso completo
+     * @param type $storage
+     * @return <string>
+     */
+    public function cleanStorage($storage) {
+        
+        if (strpos($storage, 'ttp:') > 0) {
+           
+            return $storage;
+        } else if (strpos($storage, '/upload') > 0) {
+            
+            $sub = substr($storage, strpos($storage, '/upload'));
+        } else {
+            
+            $sub = $storage;
+        }
+        
+        return 'http://localhost' . $sub;
+    }
+
 }

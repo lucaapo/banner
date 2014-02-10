@@ -62,24 +62,25 @@ class Page_model extends CI_Model {
         $this->db->select('*');
         $this->db->from('page');
         $this->db->join('banner', 'banner.page_id=page.page_id');
-        $this->db->join('banner_typology', 'banner.banner_typology_id=banner_typology.banner_typology_id');
-        $this->db->where('page.active', 1);
-        $this->db->where('banner.active', 1);
+//        $this->db->join('banner_typology', 'banner.banner_typology_id=banner_typology.banner_typology_id');
+        $this->db->where('page.active', '1');
+        $this->db->where('banner.active', '1');
         $this->db->where('banner.banner_typology_id', $typo);
         $this->db->like('page.url', $page);
+        
         if ($this->db->count_all_results() < 1)
             return null;
         $this->db->select('*');
         $this->db->from('page');
         $this->db->join('banner', 'banner.page_id=page.page_id');
         $this->db->join('banner_typology', 'banner.banner_typology_id=banner_typology.banner_typology_id');
-        $this->db->where('page.active', 1);
-        $this->db->where('banner.active', 1);
+        $this->db->where('page.active', '1');
+        $this->db->where('banner.active', '1');
         $this->db->where('banner.banner_typology_id', $typo);
         $this->db->like('page.url', $page);
 
         $res = $this->db->get();
-
+        
         $ret = array();
         foreach ($res->result() as $row) {
             $ret[] = $row;
@@ -120,6 +121,10 @@ class Page_model extends CI_Model {
      */
     public function deactivate($page_id) {
         $this->active = 0;
+        $old = $this->db->get_where('page',array('page_id'=>$page_id));
+        $this->url = $old->url;
+        $this->website_id = $old->website_id;
+        
         $this->db->update('page', $this, array('page_id' => $page_id));
     }
 
@@ -131,15 +136,18 @@ class Page_model extends CI_Model {
     public function searchPage($url) {
         $this->db->select('page_id');
         $this->db->from('page');
-        $this->db->where('active=0 AND url=' . $url);
+        $this->db->where('active', 0);
+        $this->db->where('url', $url);
         if ($this->db->count_all_results() < 1)
             return 0;
         $this->db->select('page_id');
         $this->db->from('page');
-        $this->db->where('active=0 AND url=' . $url);
+        $this->db->where('active', '0');
+        $this->db->where('url', $url);
         $res = $this->db->get();
         return $res->result();
     }
+
     /**
      * inserisce una pagina e torna l'id inserito
      * @param type $url
@@ -153,6 +161,23 @@ class Page_model extends CI_Model {
 
         $this->db->insert('page', $this);
         return $this->db->insert_id();
+    }
+
+    /**
+     * torna tutte le pagine con banner 
+     */
+    public function getAll() {
+        $this->db->select('*');
+        $this->db->from('banner');
+        $this->db->join('page', 'banner.page_id=page.page_id');
+        $this->db->join('banner_typology', 'banner.banner_typology_id=banner_typology.banner_typology_id');
+        $this->db->where('banner.active', 1);
+        $res = $this->db->get();
+        $ret = array();
+        foreach ($res->result() as $row) {
+            $ret[]=$row;
+        }
+        return $ret;
     }
 
 }

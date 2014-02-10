@@ -20,7 +20,8 @@
     
     <li><a href="#">Home</a></li>
     <?php if($auth->is_logged_in()): ?>
-    <li><?php echo anchor("website/addone","Inserisci un Sito"); ?></li>
+    <!--li><?php echo anchor("website/addone","Inserisci un Sito"); ?></li-->
+    <li><?php echo anchor("page/table","Vedi i Banner");?></li>
     <li><?php echo anchor("banner/form_upload","Aggiungi un Banner");?></li>
     <li><?php echo anchor('auth/logout',"Logout");?> </li>
     <?php else: ?>

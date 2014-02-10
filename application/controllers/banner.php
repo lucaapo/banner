@@ -38,7 +38,8 @@ class banner extends CI_Controller {
         $config['max_height'] = '768';
 
         $this->load->library('upload', $config);
-
+        $this->load->model('Page_model');
+        $this->load->model('Banner_model');
         if (!$this->upload->do_upload()) {
             $error = array('error' => $this->upload->display_errors());
 //                print_r($this->upload->data());
@@ -50,6 +51,7 @@ class banner extends CI_Controller {
             $this->load->view('templates/footer');
         } else {
             $page_id = 0;
+            
             $page = $_POST['page_name'];
             $x = $_POST['dimx'];
             $y = $_POST['dimy'];
@@ -70,11 +72,12 @@ class banner extends CI_Controller {
                 return;
             }
             //caso ovverride: devo cancellare i banner sovrascritti
-            if (isset($_POST['ovverride']) && $_POST['ovverride'] != "") {
+            $pages = $this->Page_model->getSimilarPages($page,$typo);
+            if (is_array($pages) && !is_null($pages)) {
                 //carico le pagine simili
-                $this->load->model('Page_model');
-                $pages = $this->Page_model->getSimilarPages($page,$typo);
+                              
                 foreach ($pages as $pag){
+                    
                     $this->Banner_model->deactivate($pag->banner_id);
                     if($page == trim($pag->url)){
                         $page_id = $pag->page_id;
@@ -95,10 +98,15 @@ class banner extends CI_Controller {
             }
             
             //inserisce il banner
-            /**
-             * @TODO manca la data di start e di stop!!!
-             * 
-             */
+            $data['page_id']=$page_id;
+            $data['start_date']=$startdate;
+            $data['end_date']=$enddate;
+            $data['banner_typology_id']=$typo;
+            $data['dimension_x']=$x;
+            $data['dimension_y']=$y;
+            $data['storage']=$uplaod_data['full_path'];
+            $this->Banner_model->save($data);
+            
             $data = array('upload_data' => $this->upload->data());
             $this->load->view('templates/header');
             $this->load->view('banner/uploaded', $data);

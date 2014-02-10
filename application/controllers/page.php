@@ -64,4 +64,28 @@ class Page extends CI_Controller {
         return $final;
     }
 
+    public function table(){
+        $pages=array();
+        $this->load->model('Page_model');
+        $this->load->model('Banner_model');
+        $res = $this->Page_model->getAll();
+        if($res!=null && is_array($res)){
+            foreach($res as $key){
+                $appo = array();
+                $appo['typology']=$key->typology;
+                $appo['page']=$key->url;
+                $appo['start_date']=$key->start_date;
+                $appo['end_date']=$key->end_date;
+                $appo['active']=$key->active;
+                $appo['storage']=$this->Banner_model->cleanStorage($key->storage);
+                $appo['url']=$key->url;
+                $pages[]=$appo;
+            }
+        }
+        $data['pages']=$pages;
+        $this->load->view('templates/header');
+        $this->load->view('page/table', $data);
+        $this->load->view('templates/footer');
+    }
+    
 }
