@@ -16,12 +16,13 @@ class Page extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('Page_model');
+        $this->load->library('pagination');
     }
 
     public function check() {
         if (isset($_POST['root']) && isset($_POST['typo'])) {
             $root = $_POST['root'];
-            $dim = $this->Page_model->getSimilarPages($root,$_POST['typo']);
+            $dim = $this->Page_model->getSimilarPages($root, $_POST['typo']);
 //            $dim = $this->my_array_unique($dim);
             if ($dim != null) {
                 header('Content-Type: application/json');
@@ -50,9 +51,9 @@ class Page extends CI_Controller {
             return $my;
         }
         $final = array();
-        $count=0;
-        for ($j = 0; $j < (count($my)-1); $j++) {
-            for ($i = ($j+1); $i < count($my); $i++) {
+        $count = 0;
+        for ($j = 0; $j < (count($my) - 1); $j++) {
+            for ($i = ($j + 1); $i < count($my); $i++) {
                 if ($my[$i]->url == $my[$j]->url && $my[$i]->typology == $my[$j]->typology && $my[$i]->banner_id == $my[$j]->banner_id) {
                     continue;
                 } else {
@@ -64,29 +65,46 @@ class Page extends CI_Controller {
         return $final;
     }
 
-    public function table(){
-        $pages=array();
+    public function table() {
+
+        $config['base_url'] =base_url() .'/index.php/page/table';
+        $config['total_rows'] = 50;
+        $config['per_page'] = 1;
+        $this->pagination->initialize($config);
+        
+        $pages = array();
         $this->load->model('Page_model');
         $this->load->model('Banner_model');
         $res = $this->Page_model->getAll();
-        if($res!=null && is_array($res)){
-            foreach($res as $key){
+        if ($res != null && is_array($res)) {
+            foreach ($res as $key) {
                 $appo = array();
-                $appo['typology']=$key->typology;
-                $appo['page']=$key->url;
-                $appo['start_date']=$key->start_date;
-                $appo['end_date']=$key->end_date;
-                $appo['active']=$key->active;
-                $appo['storage']=$this->Banner_model->cleanStorage($key->storage);
-                $appo['url']=$key->url;
-                $appo['banner_id']=$key->banner_id;
-                $pages[]=$appo;
+                $appo['typology'] = $key->typology;
+                $appo['page'] = $key->url;
+                $appo['start_date'] = $key->start_date;
+                $appo['end_date'] = $key->end_date;
+                $appo['active'] = $key->active;
+                $appo['storage'] = $this->Banner_model->cleanStorage($key->storage);
+                $appo['url'] = $key->url;
+                $appo['banner_id'] = $key->banner_id;
+                $pages[] = $appo;
             }
         }
-        $data['pages']=$pages;
+        $data['pages'] = $pages;
+        $data['pagination']=$this->pagination->create_links();
         $this->load->view('templates/header');
         $this->load->view('page/table', $data);
         $this->load->view('templates/footer');
     }
+
+//            
+//
+//        
+//        
+//      
+//
+//        
+//
+//        echo $this->
     
 }

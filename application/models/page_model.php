@@ -67,7 +67,7 @@ class Page_model extends CI_Model {
         $this->db->where('banner.active', '1');
         $this->db->where('banner.banner_typology_id', $typo);
         $this->db->like('page.url', $page);
-        
+
         if ($this->db->count_all_results() < 1)
             return null;
         $this->db->select('*');
@@ -80,7 +80,7 @@ class Page_model extends CI_Model {
         $this->db->like('page.url', $page);
 
         $res = $this->db->get();
-        
+
         $ret = array();
         foreach ($res->result() as $row) {
             $ret[] = $row;
@@ -121,10 +121,10 @@ class Page_model extends CI_Model {
      */
     public function deactivate($page_id) {
         $this->active = 0;
-        $old = $this->db->get_where('page',array('page_id'=>$page_id));
+        $old = $this->db->get_where('page', array('page_id' => $page_id));
         $this->url = $old->url;
         $this->website_id = $old->website_id;
-        
+
         $this->db->update('page', $this, array('page_id' => $page_id));
     }
 
@@ -175,9 +175,13 @@ class Page_model extends CI_Model {
         $res = $this->db->get();
         $ret = array();
         foreach ($res->result() as $row) {
-            $ret[]=$row;
+            $ret[] = $row;
         }
         return $ret;
     }
 
-}
+    public function getPage($page_id) {
+        $query= $this->db->get_where('page', array('page_id' => $page_id));
+        return $query->result();
+    }
+}    

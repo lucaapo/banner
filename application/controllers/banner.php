@@ -128,14 +128,16 @@ class banner extends CI_Controller {
     }
 
     public function delete() {
-        if ($_POST['banner_id'] < 1 || $_POST['banner_id'] != "") {
-            $banner_id = $_POST['banner_id'];
+        $banner_id = $_POST['banner_id'];
+        if ($banner_id >0) {
+            
             $this->load->model('Banner_model');
             $this->load->model('Page_model');
-            $ban = $this->Banner_model->get_where('banner', array('banner_id' => $banner_id));
+            $ban = $this->Banner_model->getBannerFromId($banner_id);
+            
             $this->Banner_model->deactivate($banner_id);
-            $page = $this->Page_model->get_where('page', array('page_id' => $ban->page_id));
-            $allbanner = $this->Banner_model->get_where('banner', array('page_id' => $page->page_id));
+            $page = $this->Page_model->getPage($ban->page_id);
+            $allbanner = $this->Banner_model->getBannerFromPage( $page->page_id);
             if (count($allbanner) == 0 || is_null($allbanner)) {
                 $this->Page_model->deactivate($page->page_id);
             }

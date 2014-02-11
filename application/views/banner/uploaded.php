@@ -1,12 +1,6 @@
-<html>
-<head>
-<title>My Form</title>
-</head>
-<body>
+<h3><?php echo $this->lang->line('form_ok');?></h3>
 
-<h3>Your form was successfully submitted!</h3>
-
-<p><?php echo anchor('upload', 'Try it again!'); ?></p>
+<p><?php echo anchor('upload', $this->lang->line('do_again')); ?></p>
 
 </body>
 </html>

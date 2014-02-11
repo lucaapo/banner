@@ -4,7 +4,7 @@
     }
     
     function deleteBanner(id){
-        $.ajax('banner/delete',{
+        $.ajax('<?php echo site_url('banner/delete'); ?>',{
             method: 'post',
             data: {'banner_id':id},
             success: function (resp, state, xml){
@@ -17,10 +17,10 @@
 </script>
 
 <?php if (count($pages) > 0): ?>
-
+    <?php echo $pagination;?>
     <table>
         <thead>
-            <tr><td>Pagina</td><td>Banner</td><td>Typology</td><td>Start Date</td><td>End Date</td><td>Action</td></tr>
+            <tr><td><?php echo $this->lang->line('page_table_head');?></td><td><?php echo $this->lang->line('banner_table_head');?></td><td><?php echo $this->lang->line('typology_table_head');?></td><td><?php echo $this->lang->line('start_date_table_head');?></td><td><?php echo $this->lang->line('end_date_table_head');?></td><td><?php echo $this->lang->line('action_table_head');?></td></tr>
         </thead>
         <tbody>
             <?php $i = 0;
@@ -42,7 +42,8 @@
                     <td><?php echo $page['typology']; ?></td>
                     <td><?php echo date('d-m-Y',  strtotime($page['start_date'])); ?></td>
                     <td><?php echo date('d-m-Y',  strtotime($page['end_date'])); ?></td>
-                    <td><a href='#' onclick="js:deleteBanner(<?php echo $page['banner_id'];?>);"></td>
+                    <td><span class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" onclick="js:deleteBanner(<?php echo $page['banner_id'];?>);">Cancella</span></td><?php //echo anchor('','Cancella',array("onClick"=>'js:deleteBanner('.$page['banner_id'].');'));?>
+                    
                 </tr>
 
     <?php $i++;

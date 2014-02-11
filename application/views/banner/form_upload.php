@@ -62,7 +62,8 @@
 //                        $('#load').show();
 //                        $('#startdate').show();
 //                        $('#enddate').show();
-                        $('#prosegui').show();
+//                        $('#prosegui').show();
+                        goany();
                         $('#upload').hide();
                         return true;
                     },
@@ -106,11 +107,11 @@
 <?php echo $this->lang->line('select_typology_intro');?>
 <?php echo form_dropdown('typology', $typologies, 0, 'onChange="js:fillDimensions(this.value);" id="typology"'); ?>
 <div id='dimensions' style="width: 30%; padding: 5px;">
-    Larghezza:&nbsp;<span id='dimension_x'>
+    <?php echo $this->lang->line('width');?>&nbsp;<span id='dimension_x'>
 
     </span>&nbsp; px
     <input type="hidden" value="" name="dimx" id="dimx" /> 
-    Altezza: <span id='dimension_y'>
+    <?php echo $this->lang->line('heigth');?> <span id='dimension_y'>
 
     </span>&nbsp; px
     <input type="hidden" value="" name="dimy" id="dimy"/>
@@ -121,23 +122,25 @@
 <span id="title-page">2.----------------</span>
 <div id="pageselect">
     <?php echo form_input('page_name', 0, 'id="page"'); ?>
-    <?php echo form_button('Controlla', 'Controlla', 'onClick="js:checkPage();"'); ?>
-
+    <?php echo form_button($this->lang->line('button_check'), $this->lang->line('button_check'), 'onClick="js:checkPage();"'); ?>
+    <br/>
     <span id="messages"></span>
-    <input type="button" id="prosegui" value="Prosegui lo stesso" name="goon" onclick="js:goany();"/>
+    <!--input type="button" id="prosegui" value="<?php echo $this->lang->line('button_goon');?>" name="goon" onclick="js:goany();"/-->
+    <br/>
     <span id="old-page"></span>
 
 
 
 </div>
+<br/>
 <div id="startdate">
-    <input id="start_date" name="start_date" value=""/>
+    <?php echo $this->lang->line('start_date');?><input id="start_date" size="6" name="start_date" value=""/>
 </div>
 <div id="enddate">
-    <input id="end_date" name="end_date" value=""/>
+    <?php echo $this->lang->line('end_date');?><input id="end_date" size="6" name="end_date" value=""/>
 </div>
 <div id="nopage">
-    <input id="load" type="submit" name="override" value="Carica e sovrascrivi"/>
-    <input id='upload' type="submit" value="upload" name="submit"/>
+    <input id="load" type="submit" name="override" value="<?php echo $this->lang->line('upload_anyway');?>"/>
+    <input id='upload' type="submit" value="upload" name="<?php echo $this->lang->line('upload');?>"/>
 </div>
 <?php echo form_close(); ?>

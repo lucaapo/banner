@@ -59,6 +59,11 @@ class Banner_model extends CI_Model {
         $this->start_date = $_POST['start_date'];
         $this->db->update('banner', $this, array('banner_id' => $_POST['banner_id']));
     }
+    
+    public function getBannerFromId($banner_id){
+        $query= $this->db->get_where('banner', array('banner_id' => $banner_id));
+        return $query->result();
+    }
 
     /**
      *  TOrna i banner di una pagina
