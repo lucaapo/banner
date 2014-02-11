@@ -1,5 +1,6 @@
 <?php
-require APPPATH.'/libraries/REST_Controller.php';
+
+require APPPATH . '/libraries/REST_Controller.php';
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -19,21 +20,49 @@ class Banner_rest extends REST_Controller {
 //            return;
 //        }
         $this->load->model('Banner_model');
-        $id= $this->get('id');
-        $user_id = $this->get('user_id');
-        $banner_id = $this->get('banner_id');
-//        $user_id = $this->get('id');
-//        $banner_id = $this->get('id');
+        $this->load->model('Page_model');
 
-        $storage = $this->Banner_model->getBanner($user_id, $user_id);
+        $typology = $this->get('banner');
+        $page = $this->get('page');
+        $pageBan = $this->Page_model->getExactPageBanner($page,$typology);
+        
+        if (is_null($pageBan) || !$pageBan instanceof stdClass ) {
+            //ciclo sulla url per trovare il banner corretto
+            if (strchr($page, '/') > 1) {
+                $page_chunk = explode('/', $page);
+                $tosearch = $page;
+                for ($i = count($page_chunk); $i > 1; $i--) {
+                    $pageBan = $this->Page_model->getExactPageBanner($tosearch,$typology);
+                    if (is_null($pageBan) || !is_object($pageBan)) {
+                        $tosearch2 = $tosearch."%";
+                        $pageBan = $this->Page_model->getExactPageBanner($tosearch2,$typology);
+                        
+                    }
+                    $tosearch = str_replace($page_chunk[$i] . '/', '', $tosearch);
+                    if ($pageBan != null && is_object($pageBan)) {
+                        break;
+                    }
+                }
+            } else {
+
+                $pageBan = $this->Page_model->getExactPageBanner($page . '/%',$typology);
+                if (is_null($pageBan) || !is_object($pageBan))
+                    return;
+            }
+        }
+//        $banner = $this->Banner_model->getBannerOnPage($pageBan->page_id, $typology);
+//        $storage = $this->Banner_model->getBanner($user_id, $user_id);
+        
+//        $storage = $this->Banner_model->cleanStorage($pageBan->storage);
+        $storage = $pageBan->storage;
         if ($storage == "" || is_null($storage)) {
-            $this->response('erorre!!'.$id,200);
+            $this->response('erorre!!' . $id, 200);
             return;
         }
         header("Content-Type: image/jpg");
         //header("Content-Disposition: attachment; filename=\"" .$storage . "\";");
         //header("Content-Length: " . filesize($storage));
-        
+
         $fh = fopen($storage, 'r');
         $content = fread($fh, filesize($storage));
         fclose($fh);
@@ -41,7 +70,5 @@ class Banner_rest extends REST_Controller {
         $this->response($content, 200);
         return;
     }
-    
-  
 
 }

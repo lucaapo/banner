@@ -166,7 +166,25 @@ class Banner_model extends CI_Model {
             $sub = $storage;
         }
         
-        return 'http://localhost' . $sub;
+         return str_replace('///','/',base_url() .'/'. $sub);
     }
-
+    /**
+     * torna il banner partendo dalla typology e dall'id della pagina
+     * @param type $page_id
+     * @param type $typology
+     * @return type
+     */
+    public function getBannerOnPage($page_id,$typology){
+        $this->db->select('*');
+        $this->db->from('banner');
+        $this->db->join('banner_typology','banner_typology.banner_typology_id=banner.banner_typology_id');
+        $this->db->where('banner_typology.typology',$typology);
+        $this->db->where('banner.page_id',$page_id);
+        $this->db->where('banner.active',1);
+        $res = $this->db->get();
+        return $res->result();
+        
+        
+    }
+    
 }
