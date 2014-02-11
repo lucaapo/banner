@@ -234,7 +234,9 @@ class Page_model extends CI_Model {
         $this->db->where('banner_typology.typology', $typology);
         $res = $this->db->get();
         $arr =$res->result();
-        return $arr[0];
+        if(is_array($arr) && $arr!=NULL)
+            return $arr[0];
+        return null;
     }
 
 }
