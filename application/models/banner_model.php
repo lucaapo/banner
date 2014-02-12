@@ -107,7 +107,9 @@ class Banner_model extends CI_Model {
      * @param type $banner_id
      */
     public function deactivate($banner_id) {
-        $old = $this->db->get_where('banner',array('banner_id'=>$banner_id));
+        $this->db->from('banner');
+        $this->db->where('banner_id',$banner_id);
+        $old = $this->db->get();
         $this->active = 0;
         $this->start_date = $old->start_date;
         $this->end_date = $old->end_date;

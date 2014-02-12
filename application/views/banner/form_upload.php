@@ -95,8 +95,8 @@
     }
 
     $(document).ready(function() {
-        $("#start_date").datepicker();
-        $("#end_date").datepicker();
+        $("#start_date").datepicker({dateFormat: "dd-mm-yy"});
+        $("#end_date").datepicker({dateFormat: "dd-mm-yy"});
     });
 
 </script>
@@ -104,14 +104,14 @@
 <?php echo $error; ?>
 
 <?php echo form_open_multipart('banner/uploaded'); ?>
-<?php echo $this->lang->line('select_typology_intro');?>
+<?php echo $this->lang->line('select_typology_intro'); ?>
 <?php echo form_dropdown('typology', $typologies, 0, 'onChange="js:fillDimensions(this.value);" id="typology"'); ?>
 <div id='dimensions' style="width: 30%; padding: 5px;">
-    <?php echo $this->lang->line('width');?>&nbsp;<span id='dimension_x'>
+    <?php echo $this->lang->line('width'); ?>&nbsp;<span id='dimension_x'>
 
     </span>&nbsp; px
     <input type="hidden" value="" name="dimx" id="dimx" /> 
-    <?php echo $this->lang->line('heigth');?> <span id='dimension_y'>
+    <?php echo $this->lang->line('heigth'); ?> <span id='dimension_y'>
 
     </span>&nbsp; px
     <input type="hidden" value="" name="dimy" id="dimy"/>
@@ -124,8 +124,23 @@
     <?php echo form_input('page_name', 0, 'id="page"'); ?>
     <?php echo form_button($this->lang->line('button_check'), $this->lang->line('button_check'), 'onClick="js:checkPage();"'); ?>
     <br/>
+    
+    <?php
+    echo   $this->lang->line('allpages_radio');
+    $data = array(
+        'name' => 'allpages',
+        'id' => 'allpages',
+        'value' => '1',
+        'checked' => FALSE,
+        'style' => 'margin:10px',
+    );
+
+    echo form_checkbox($data);
+    
+    ?>
+    <br/>
     <span id="messages"></span>
-    <!--input type="button" id="prosegui" value="<?php echo $this->lang->line('button_goon');?>" name="goon" onclick="js:goany();"/-->
+    <!--input type="button" id="prosegui" value="<?php echo $this->lang->line('button_goon'); ?>" name="goon" onclick="js:goany();"/-->
     <br/>
     <span id="old-page"></span>
 
@@ -134,13 +149,13 @@
 </div>
 <br/>
 <div id="startdate">
-    <?php echo $this->lang->line('start_date');?><input id="start_date" size="6" name="start_date" value=""/>
+<?php echo $this->lang->line('start_date'); ?><input id="start_date" size="6" name="start_date" value=""/>
 </div>
 <div id="enddate">
-    <?php echo $this->lang->line('end_date');?><input id="end_date" size="6" name="end_date" value=""/>
+<?php echo $this->lang->line('end_date'); ?><input id="end_date" size="6" name="end_date" value=""/>
 </div>
 <div id="nopage">
-    <input id="load" type="submit" name="override" value="<?php echo $this->lang->line('upload_anyway');?>"/>
-    <input id='upload' type="submit" value="upload" name="<?php echo $this->lang->line('upload');?>"/>
+    <input id="load" type="submit" name="override" value="<?php echo $this->lang->line('upload_anyway'); ?>"/>
+    <input id='upload' type="submit" value="upload" name="<?php echo $this->lang->line('upload'); ?>"/>
 </div>
 <?php echo form_close(); ?>

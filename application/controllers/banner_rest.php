@@ -15,10 +15,7 @@ require APPPATH . '/libraries/REST_Controller.php';
 class Banner_rest extends REST_Controller {
 
     public function index_get() {
-//        if(isset($_REQUEST['op']) && $_REQUEST['op']=='typology'){
-//            $this->typology();
-//            return;
-//        }
+
         $this->load->model('Banner_model');
         $this->load->model('Page_model');
 
@@ -34,7 +31,6 @@ class Banner_rest extends REST_Controller {
 
         if (is_null($pageBan) || !$pageBan instanceof stdClass) {
             //ciclo sulla url per trovare il banner corretto
-            
             if (mb_substr_count($page, '/') > 1) {
                 $page_chunk = explode('/', $page);
                 

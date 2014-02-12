@@ -58,6 +58,7 @@ class banner extends CI_Controller {
             $typo = $_POST['typology'];
             $startdate = $_POST['start_date'];
             $enddate = $_POST['end_date'];
+            $allpages = $_POST['allpages'];
             $uplaod_data = $this->upload->data();
             //caso file caricato dimensione diversa di quella del banner
             if ($x != $uplaod_data['image_width'] || $y != $uplaod_data['image_height']) {
@@ -91,14 +92,15 @@ class banner extends CI_Controller {
             if ($page_id == 0) {
                 $page_id = $this->Page_model->searchPage($page);
                 if ($page_id == 0 || is_null($page_id)) {
+                    $page = $this->formatPage($page, $allpages);
                     $page_id = $this->Page_model->insertPage($page);
                 }
             }
 
             //inserisce il banner
             $data['page_id'] = $page_id;
-            $data['start_date'] = $startdate;
-            $data['end_date'] = $enddate;
+            $data['start_date'] = date('Y-m-d H:i:s', strtotime($startdate));
+            $data['end_date'] = date('Y-m-d H:i:s', strtotime($enddate));
             $data['banner_typology_id'] = $typo;
             $data['dimension_x'] = $x;
             $data['dimension_y'] = $y;
@@ -129,15 +131,15 @@ class banner extends CI_Controller {
 
     public function delete() {
         $banner_id = $_POST['banner_id'];
-        if ($banner_id >0) {
-            
+        if ($banner_id > 0) {
+
             $this->load->model('Banner_model');
             $this->load->model('Page_model');
             $ban = $this->Banner_model->getBannerFromId($banner_id);
-            
+
             $this->Banner_model->deactivate($banner_id);
             $page = $this->Page_model->getPage($ban->page_id);
-            $allbanner = $this->Banner_model->getBannerFromPage( $page->page_id);
+            $allbanner = $this->Banner_model->getBannerFromPage($page->page_id);
             if (count($allbanner) == 0 || is_null($allbanner)) {
                 $this->Page_model->deactivate($page->page_id);
             }
@@ -149,6 +151,20 @@ class banner extends CI_Controller {
             header("HTTP/1.1 404");
             echo xml_convert('<error>Impossibile eliminare il banner indicato</error>');
         }
+    }
+    /**
+     * formatta la pagina secondo lo standard
+     * @param type $page
+     * @param type $allpages
+     * @return string
+     */
+    public function formatPage($page, $allpages) {
+        if($page[0]!='/')$page='/'.$page;
+        if($page[(strlen($page)-1)]!='/')$page.='/';
+        if ($allpages == TRUE) {
+            $page.='%';
+        }
+        return $page;
     }
 
 }

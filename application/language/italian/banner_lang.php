@@ -23,3 +23,4 @@ $lang['typology_table_head']='Tipologia';
 $lang['start_date_table_head']='Data Inizio';
 $lang['end_date_table_head']='Data Fine';
 $lang['action_table_head']='Action';
+$lang['allpages_radio'] = 'Pubblica questo banner su tutte le pagine che iniziano con questa URL?';
