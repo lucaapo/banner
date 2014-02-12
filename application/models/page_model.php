@@ -174,6 +174,9 @@ class Page_model extends CI_Model {
         $this->db->join('page', 'banner.page_id=page.page_id');
         $this->db->join('banner_typology', 'banner.banner_typology_id=banner_typology.banner_typology_id');
         $this->db->where('banner.active', 1);
+        $this->db->where('page.active', 1);
+        $this->db->where('banner.start_date <', date("Y-m-d",time()));
+        $this->db->where('banner.end_date >', date("Y-m-d",time()));
         $res = $this->db->get();
         $ret = array();
         foreach ($res->result() as $row) {
@@ -225,7 +228,12 @@ class Page_model extends CI_Model {
         $res = $this->db->get();
         return $res->result();
     }
-
+    /**
+     * torna il banner che corrisponde esattamente alla pagina passata
+     * @param type $url
+     * @param type $typology
+     * @return null
+     */
     public function getExactPageBanner($url,$typology) {
         $this->db->select('*');
         $this->db->from('page');
@@ -233,6 +241,8 @@ class Page_model extends CI_Model {
         $this->db->join('banner_typology', 'banner_typology.banner_typology_id=banner.banner_typology_id');
         $this->db->where('banner.active', '1');
         $this->db->where('page.active', '1');
+        $this->db->where('banner.start_date < ',date("Y-m-d",time()));
+        $this->db->where('banner.end_date > ',date("Y-m-d",time()));
         $this->db->where('page.url', $url);
         $this->db->where('banner_typology.typology', $typology);
         $res = $this->db->get();

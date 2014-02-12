@@ -67,7 +67,7 @@ class Page extends CI_Controller {
 
     public function table() {
 
-        $config['base_url'] =base_url() .'/index.php/page/table';
+        $config['base_url'] = site_url('page/table'); // base_url() .'/index.php/page/table';
         $config['total_rows'] = 50;
         $config['per_page'] = 1;
         $this->pagination->initialize($config);
