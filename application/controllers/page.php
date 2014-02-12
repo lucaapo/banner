@@ -65,17 +65,19 @@ class Page extends CI_Controller {
         return $final;
     }
 
-    public function table() {
-
-        $config['base_url'] = site_url('page/table'); // base_url() .'/index.php/page/table';
-        $config['total_rows'] = 50;
-        $config['per_page'] = 1;
-        $this->pagination->initialize($config);
-        
+    public function table($pageNum = 0) {
         $pages = array();
         $this->load->model('Page_model');
         $this->load->model('Banner_model');
-        $res = $this->Page_model->getAll();
+        
+        $config['base_url'] = site_url('page/table'); // base_url() .'/index.php/page/table';
+        $config['total_rows'] = $this->Page_model->countAll();
+        $config['per_page'] = 1;
+        $this->pagination->initialize($config);
+        
+        $offset = ($pageNum )* $config['per_page'];
+        
+        $res = $this->Page_model->getAll($offset,$config['per_page']);
         if ($res != null && is_array($res)) {
             foreach ($res as $key) {
                 $appo = array();

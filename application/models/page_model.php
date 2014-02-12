@@ -165,10 +165,7 @@ class Page_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    /**
-     * torna tutte le pagine con banner 
-     */
-    public function getAll() {
+    public function countAll(){
         $this->db->select('*');
         $this->db->from('banner');
         $this->db->join('page', 'banner.page_id=page.page_id');
@@ -177,6 +174,24 @@ class Page_model extends CI_Model {
         $this->db->where('page.active', 1);
         $this->db->where('banner.start_date <', date("Y-m-d",time()));
         $this->db->where('banner.end_date >', date("Y-m-d",time()));
+        return $this->db->count_all_results();
+        
+    }
+    
+    /**
+     * torna tutte le pagine con banner 
+     */
+    public function getAll($offset,$limit) {
+        $this->db->select('*');
+        $this->db->from('banner');
+        $this->db->join('page', 'banner.page_id=page.page_id');
+        $this->db->join('banner_typology', 'banner.banner_typology_id=banner_typology.banner_typology_id');
+        $this->db->where('banner.active', 1);
+        $this->db->where('page.active', 1);
+        $this->db->where('banner.start_date <', date("Y-m-d",time()));
+        $this->db->where('banner.end_date >', date("Y-m-d",time()));
+        if($offset==0)$this->db->limit($limit);
+        else $this->db->limit($offset, $limit);
         $res = $this->db->get();
         $ret = array();
         foreach ($res->result() as $row) {
