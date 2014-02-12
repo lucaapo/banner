@@ -62,7 +62,8 @@ class Banner_model extends CI_Model {
     
     public function getBannerFromId($banner_id){
         $query= $this->db->get_where('banner', array('banner_id' => $banner_id));
-        return $query->result();
+        $res= $query->result();
+        return $res[0];
     }
 
     /**
@@ -109,7 +110,10 @@ class Banner_model extends CI_Model {
     public function deactivate($banner_id) {
         $this->db->from('banner');
         $this->db->where('banner_id',$banner_id);
-        $old = $this->db->get();
+        $res = $this->db->get();
+        
+        if($res!=null)$old = $res->result();
+        $old = $old[0];
         $this->active = 0;
         $this->start_date = $old->start_date;
         $this->end_date = $old->end_date;

@@ -58,7 +58,8 @@ class banner extends CI_Controller {
             $typo = $_POST['typology'];
             $startdate = $_POST['start_date'];
             $enddate = $_POST['end_date'];
-            $allpages = $_POST['allpages'];
+            if(isset($_POST['allpages']))$allpages = $_POST['allpages'];
+            $allpages = false;
             $uplaod_data = $this->upload->data();
             //caso file caricato dimensione diversa di quella del banner
             if ($x != $uplaod_data['image_width'] || $y != $uplaod_data['image_height']) {

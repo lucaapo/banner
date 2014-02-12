@@ -66,10 +66,11 @@ class Page_model extends CI_Model {
         $this->db->where('page.active', '1');
         $this->db->where('banner.active', '1');
         $this->db->where('banner.banner_typology_id', $typo);
-        $this->db->like('page.url', $page);
+        $this->db->like('page.url', $page,'after');
 
         if ($this->db->count_all_results() < 1)
             return null;
+//        echo $this->db->last_query();
         $this->db->select('*');
         $this->db->from('page');
         $this->db->join('banner', 'banner.page_id=page.page_id');
@@ -77,10 +78,9 @@ class Page_model extends CI_Model {
         $this->db->where('page.active', '1');
         $this->db->where('banner.active', '1');
         $this->db->where('banner.banner_typology_id', $typo);
-        $this->db->like('page.url', $page);
+        $this->db->like('page.url', $page,'after');
 
         $res = $this->db->get();
-
         $ret = array();
         foreach ($res->result() as $row) {
             $ret[] = $row;
@@ -89,21 +89,21 @@ class Page_model extends CI_Model {
     }
 
     public function getSimilarPages($root, $typo) {
-        $numChars = preg_match_all("/\//", $root, $num);
+        if($root[0]!='/')$root="/".$root;
 
-        if ($numChars <= 0) {
+        if ($root[(strlen($root)-1)]!='/') {
             $root.="/";
         }
         $chunk = explode('/', $root);
         $dim = array();
-        $base = $chunk[0];
+        $base = '/';
         for ($i = 0; $i < count($chunk); $i++) {
             if ($chunk[$i] == "")
                 continue;
             if ($i == 0) {
                 $to_add = "";
             } else {
-                $to_add = "/" . $chunk[$i];
+                $to_add =  $chunk[$i].'/';
             }
             $base = $base . $to_add;
             $appo = $this->checkPage($base, $typo);
@@ -121,7 +121,9 @@ class Page_model extends CI_Model {
      */
     public function deactivate($page_id) {
         $this->active = 0;
-        $old = $this->db->get_where('page', array('page_id' => $page_id));
+        $res = $this->db->get_where('page', array('page_id' => $page_id));
+        if($res!=null)$old = $res->result();
+        $old = $old[0];
         $this->url = $old->url;
         $this->website_id = $old->website_id;
 
@@ -182,7 +184,8 @@ class Page_model extends CI_Model {
 
     public function getPage($page_id) {
         $query = $this->db->get_where('page', array('page_id' => $page_id));
-        return $query->result();
+        $res= $query->result();
+        return $res[0];
     }
 
     /**
@@ -218,7 +221,7 @@ class Page_model extends CI_Model {
         $this->db->join('banner', 'banner.page_id=page.page_id');
         $this->db->where('banner.active', '1');
         $this->db->where('page.active', '1');
-        $this->db->like('page.url', $url, 'right');
+        $this->db->like('page.url', $url, 'after');
         $res = $this->db->get();
         return $res->result();
     }
